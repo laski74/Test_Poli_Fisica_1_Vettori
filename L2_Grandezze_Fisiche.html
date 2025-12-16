@@ -1,0 +1,1439 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ripasso Fisica - Test Ingresso Politecnico</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .tab-button {
+            background: white;
+            border: none;
+            padding: 15px 30px;
+            cursor: pointer;
+            border-radius: 10px 10px 0 0;
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #667eea;
+            transition: all 0.3s;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .tab-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 -5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .tab-button.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .tab-content {
+            display: none;
+            background: white;
+            padding: 40px;
+            border-radius: 0 10px 10px 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            animation: fadeIn 0.5s;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+        
+        h3 {
+            color: #764ba2;
+            margin-top: 25px;
+            margin-bottom: 15px;
+        }
+
+        h4 {
+            color: #667eea;
+            margin-top: 15px;
+            margin-bottom: 10px;
+        }
+        
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 5px solid #667eea;
+        }
+        
+        ul, ol {
+            margin-left: 25px;
+            line-height: 1.8;
+        }
+        
+        li {
+            margin-bottom: 10px;
+        }
+        
+        .formula {
+            background: #e8eaf6;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1.1em;
+            overflow-x: auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        tr:nth-child(even) {
+            background: #f2f2f2;
+        }
+        
+        .exercise {
+            background: white;
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 8px;
+            border: 2px solid #667eea;
+        }
+        
+        .exercise-header {
+            cursor: pointer;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 5px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s;
+        }
+        
+        .exercise-header:hover {
+            transform: translateX(5px);
+        }
+        
+        .exercise-header::after {
+            content: '▼';
+            transition: transform 0.3s;
+        }
+        
+        .exercise-header.active::after {
+            transform: rotate(180deg);
+        }
+        
+        .solution {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out;
+            padding: 0 15px;
+        }
+        
+        .solution.show {
+            max-height: 3000px;
+            padding: 15px;
+            margin-top: 15px;
+            border-top: 2px dashed #667eea;
+        }
+        
+        .highlight {
+            background: #fff59d;
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
+        
+        .note {
+            background: #e1f5fe;
+            border-left: 4px solid #03a9f4;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+        
+        strong {
+            color: #764ba2;
+        }
+
+        p {
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📚 Ripasso Fisica - Test Ingresso Politecnico</h1>
+        
+        <div class="tabs">
+            <button class="tab-button active" onclick="openTab(event, 'tab1')">Grandezze Fisiche</button>
+            <button class="tab-button" onclick="openTab(event, 'tab2')">Vettori - Teoria</button>
+            <button class="tab-button" onclick="openTab(event, 'tab3')">Esercizi: Unità di Misura</button>
+            <button class="tab-button" onclick="openTab(event, 'tab4')">Esercizi: Vettori</button>
+        </div>
+
+        <!-- TAB 1: GRANDEZZE FISICHE -->
+        <div id="tab1" class="tab-content active">
+            <h2>📐 Grandezze Fisiche e Unità di Misura</h2>
+            
+            <div class="section">
+                <h3>1. Sistema Internazionale (SI)</h3>
+                <p>Il <strong>Sistema Internazionale</strong> è il sistema di misura standardizzato universalmente. Si basa su 7 grandezze fondamentali:</p>
+                
+                <table>
+                    <tr>
+                        <th>Grandezza</th>
+                        <th>Unità SI</th>
+                        <th>Simbolo</th>
+                    </tr>
+                    <tr>
+                        <td>Lunghezza</td>
+                        <td>metro</td>
+                        <td>m</td>
+                    </tr>
+                    <tr>
+                        <td>Massa</td>
+                        <td>kilogrammo</td>
+                        <td>kg</td>
+                    </tr>
+                    <tr>
+                        <td>Tempo</td>
+                        <td>secondo</td>
+                        <td>s</td>
+                    </tr>
+                    <tr>
+                        <td>Corrente elettrica</td>
+                        <td>ampere</td>
+                        <td>A</td>
+                    </tr>
+                    <tr>
+                        <td>Temperatura</td>
+                        <td>kelvin</td>
+                        <td>K</td>
+                    </tr>
+                    <tr>
+                        <td>Quantità di sostanza</td>
+                        <td>mole</td>
+                        <td>mol</td>
+                    </tr>
+                    <tr>
+                        <td>Intensità luminosa</td>
+                        <td>candela</td>
+                        <td>cd</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="section">
+                <h3>2. Grandezze Derivate Importanti</h3>
+                
+                <h4>Forza (Newton)</h4>
+                <div class="formula">
+                    $$1 \, \text{N} = 1 \, \text{kg} \cdot \text{m/s}^2$$
+                </div>
+                
+                <h4>Energia e Lavoro (Joule)</h4>
+                <div class="formula">
+                    $$1 \, \text{J} = 1 \, \text{N} \cdot \text{m} = 1 \, \text{kg} \cdot \text{m}^2/\text{s}^2$$
+                </div>
+                
+                <h4>Potenza (Watt)</h4>
+                <div class="formula">
+                    $$1 \, \text{W} = 1 \, \text{J/s} = 1 \, \text{kg} \cdot \text{m}^2/\text{s}^3$$
+                </div>
+                
+                <h4>Pressione (Pascal)</h4>
+                <div class="formula">
+                    $$1 \, \text{Pa} = 1 \, \text{N/m}^2 = 1 \, \text{kg/(m} \cdot \text{s}^2)$$
+                </div>
+                
+                <h4>Velocità</h4>
+                <div class="formula">
+                    $$v = \frac{\text{m}}{\text{s}}$$
+                </div>
+                
+                <h4>Accelerazione</h4>
+                <div class="formula">
+                    $$a = \frac{\text{m}}{\text{s}^2}$$
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>3. Prefissi del Sistema Internazionale</h3>
+                
+                <table>
+                    <tr>
+                        <th>Prefisso</th>
+                        <th>Simbolo</th>
+                        <th>Fattore</th>
+                        <th>Valore</th>
+                    </tr>
+                    <tr>
+                        <td>tera</td>
+                        <td>T</td>
+                        <td>$10^{12}$</td>
+                        <td>1 000 000 000 000</td>
+                    </tr>
+                    <tr>
+                        <td>giga</td>
+                        <td>G</td>
+                        <td>$10^9$</td>
+                        <td>1 000 000 000</td>
+                    </tr>
+                    <tr>
+                        <td>mega</td>
+                        <td>M</td>
+                        <td>$10^6$</td>
+                        <td>1 000 000</td>
+                    </tr>
+                    <tr>
+                        <td>kilo</td>
+                        <td>k</td>
+                        <td>$10^3$</td>
+                        <td>1 000</td>
+                    </tr>
+                    <tr>
+                        <td>etto</td>
+                        <td>h</td>
+                        <td>$10^2$</td>
+                        <td>100</td>
+                    </tr>
+                    <tr>
+                        <td>deca</td>
+                        <td>da</td>
+                        <td>$10^1$</td>
+                        <td>10</td>
+                    </tr>
+                    <tr>
+                        <td>deci</td>
+                        <td>d</td>
+                        <td>$10^{-1}$</td>
+                        <td>0.1</td>
+                    </tr>
+                    <tr>
+                        <td>centi</td>
+                        <td>c</td>
+                        <td>$10^{-2}$</td>
+                        <td>0.01</td>
+                    </tr>
+                    <tr>
+                        <td>milli</td>
+                        <td>m</td>
+                        <td>$10^{-3}$</td>
+                        <td>0.001</td>
+                    </tr>
+                    <tr>
+                        <td>micro</td>
+                        <td>μ</td>
+                        <td>$10^{-6}$</td>
+                        <td>0.000 001</td>
+                    </tr>
+                    <tr>
+                        <td>nano</td>
+                        <td>n</td>
+                        <td>$10^{-9}$</td>
+                        <td>0.000 000 001</td>
+                    </tr>
+                    <tr>
+                        <td>pico</td>
+                        <td>p</td>
+                        <td>$10^{-12}$</td>
+                        <td>0.000 000 000 001</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="section">
+                <h3>4. Conversioni Importanti</h3>
+                
+                <h4>Velocità</h4>
+                <div class="formula">
+                    $$1 \, \text{km/h} = \frac{1000 \, \text{m}}{3600 \, \text{s}} = \frac{1}{3.6} \, \text{m/s} \approx 0.278 \, \text{m/s}$$
+                </div>
+                <div class="formula">
+                    $$1 \, \text{m/s} = 3.6 \, \text{km/h}$$
+                </div>
+                
+                <div class="note">
+                    <strong>⚡ Trucco rapido:</strong> Per convertire da km/h a m/s dividi per 3.6, per convertire da m/s a km/h moltiplica per 3.6
+                </div>
+                
+                <h4>Energia</h4>
+                <div class="formula">
+                    $$1 \, \text{cal} = 4.186 \, \text{J}$$
+                </div>
+                <div class="formula">
+                    $$1 \, \text{kcal} = 1000 \, \text{cal} = 4186 \, \text{J}$$
+                </div>
+                
+                <h4>Superficie</h4>
+                <div class="formula">
+                    $$1 \, \text{ha (ettaro)} = 10000 \, \text{m}^2 = 10^4 \, \text{m}^2$$
+                </div>
+                
+                <h4>Corrente elettrica</h4>
+                <div class="formula">
+                    $$1 \, \text{pA (picoampere)} = 10^{-12} \, \text{A}$$
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>5. Analisi Dimensionale</h3>
+                <p>L'<strong>analisi dimensionale</strong> permette di verificare la correttezza delle formule e di ricavare unità di misura.</p>
+                
+                <div class="note">
+                    <strong>Regola fondamentale:</strong> Solo grandezze con le stesse dimensioni possono essere sommate o sottratte. Un'equazione fisica deve essere dimensionalmente omogenea.
+                </div>
+                
+                <h4>Esempio: Forza</h4>
+                <div class="formula">
+                    $$F = m \cdot a$$
+                </div>
+                <div class="formula">
+                    $$[F] = [m] \cdot [a] = \text{kg} \cdot \frac{\text{m}}{\text{s}^2} = \frac{\text{kg} \cdot \text{m}}{\text{s}^2} = \text{N}$$
+                </div>
+                
+                <h4>Esempio: Energia cinetica</h4>
+                <div class="formula">
+                    $$E_k = \frac{1}{2}mv^2$$
+                </div>
+                <div class="formula">
+                    $$[E_k] = \text{kg} \cdot \left(\frac{\text{m}}{\text{s}}\right)^2 = \frac{\text{kg} \cdot \text{m}^2}{\text{s}^2} = \text{J}$$
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>6. Grandezze Scalari vs Vettoriali</h3>
+                
+                <h4>Grandezze Scalari</h4>
+                <p>Completamente definite da un <strong>valore numerico</strong> e un'<strong>unità di misura</strong>.</p>
+                <ul>
+                    <li>Massa (kg)</li>
+                    <li>Temperatura (K)</li>
+                    <li>Tempo (s)</li>
+                    <li>Energia (J)</li>
+                    <li>Potenza (W)</li>
+                    <li>Lavoro (J)</li>
+                    <li>Distanza (m)</li>
+                </ul>
+                
+                <h4>Grandezze Vettoriali</h4>
+                <p>Necessitano di <strong>modulo</strong>, <strong>direzione</strong> e <strong>verso</strong>.</p>
+                <ul>
+                    <li>Spostamento (m)</li>
+                    <li>Velocità (m/s)</li>
+                    <li>Accelerazione (m/s²)</li>
+                    <li>Forza (N)</li>
+                    <li>Quantità di moto (kg·m/s)</li>
+                    <li>Momento angolare (kg·m²/s)</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- TAB 2: VETTORI -->
+        <div id="tab2" class="tab-content">
+            <h2>➡️ Vettori - Teoria</h2>
+            
+            <div class="section">
+                <h3>1. Definizione e Rappresentazione</h3>
+                <p>Un <strong>vettore</strong> è un ente matematico caratterizzato da:</p>
+                <ul>
+                    <li><strong>Modulo (intensità):</strong> lunghezza del vettore, indicata con $|\vec{v}|$ o $v$</li>
+                    <li><strong>Direzione:</strong> retta su cui giace il vettore</li>
+                    <li><strong>Verso:</strong> orientamento sulla direzione</li>
+                </ul>
+                
+                <div class="note">
+                    <strong>Notazione:</strong> I vettori si indicano con lettere sormontate da una freccia $\vec{v}$ o in grassetto <strong>v</strong>. I versori (vettori unitari) si indicano con $\hat{i}$, $\hat{j}$, $\hat{k}$ oppure $\vec{i}$, $\vec{j}$, $\vec{k}$.
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>2. Componenti Cartesiane</h3>
+                <p>Un vettore in 2D può essere espresso come:</p>
+                <div class="formula">
+                    $$\vec{v} = v_x\hat{i} + v_y\hat{j} = (v_x, v_y)$$
+                </div>
+                
+                <p>Un vettore in 3D:</p>
+                <div class="formula">
+                    $$\vec{v} = v_x\hat{i} + v_y\hat{j} + v_z\hat{k} = (v_x, v_y, v_z)$$
+                </div>
+                
+                <h4>Modulo dalle componenti</h4>
+                <p>In 2D:</p>
+                <div class="formula">
+                    $$|\vec{v}| = \sqrt{v_x^2 + v_y^2}$$
+                </div>
+                
+                <p>In 3D:</p>
+                <div class="formula">
+                    $$|\vec{v}| = \sqrt{v_x^2 + v_y^2 + v_z^2}$$
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>3. Operazioni con i Vettori</h3>
+                
+                <h4>Somma di Vettori</h4>
+                <p>La somma si effettua componente per componente:</p>
+                <div class="formula">
+                    $$\vec{a} + \vec{b} = (a_x + b_x, \, a_y + b_y, \, a_z + b_z)$$
+                </div>
+                
+                <div class="note">
+                    <strong>Regola del parallelogramma:</strong> Il vettore somma è la diagonale del parallelogramma formato dai due vettori.
+                </div>
+                
+                <h4>Differenza di Vettori</h4>
+                <div class="formula">
+                    $$\vec{a} - \vec{b} = (a_x - b_x, \, a_y - b_y, \, a_z - b_z)$$
+                </div>
+                
+                <h4>Prodotto per uno Scalare</h4>
+                <div class="formula">
+                    $$k\vec{v} = (kv_x, \, kv_y, \, kv_z)$$
+                </div>
+                <p>Il modulo diventa: $|k\vec{v}| = |k| \cdot |\vec{v}|$</p>
+            </div>
+
+            <div class="section">
+                <h3>4. Prodotto Scalare</h3>
+                <p>Il <strong>prodotto scalare</strong> (o dot product) restituisce uno scalare:</p>
+                
+                <h4>Definizione geometrica</h4>
+                <div class="formula">
+                    $$\vec{a} \cdot \vec{b} = |\vec{a}| \cdot |\vec{b}| \cdot \cos\theta$$
+                </div>
+                <p>dove $\theta$ è l'angolo tra i due vettori.</p>
+                
+                <h4>Definizione tramite componenti</h4>
+                <div class="formula">
+                    $$\vec{a} \cdot \vec{b} = a_xb_x + a_yb_y + a_zb_z$$
+                </div>
+                
+                <h4>Proprietà</h4>
+                <ul>
+                    <li>$\vec{a} \cdot \vec{b} = \vec{b} \cdot \vec{a}$ (commutativo)</li>
+                    <li>$\vec{a} \cdot \vec{a} = |\vec{a}|^2$</li>
+                    <li>Se $\vec{a} \perp \vec{b}$ allora $\vec{a} \cdot \vec{b} = 0$</li>
+                    <li>$\hat{i} \cdot \hat{i} = \hat{j} \cdot \hat{j} = \hat{k} \cdot \hat{k} = 1$</li>
+                    <li>$\hat{i} \cdot \hat{j} = \hat{j} \cdot \hat{k} = \hat{k} \cdot \hat{i} = 0$</li>
+                </ul>
+                
+                <h4>Angolo tra due vettori</h4>
+                <div class="formula">
+                    $$\cos\theta = \frac{\vec{a} \cdot \vec{b}}{|\vec{a}| \cdot |\vec{b}|}$$
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>5. Prodotto Vettoriale</h3>
+                <p>Il <strong>prodotto vettoriale</strong> (o cross product) restituisce un vettore perpendicolare ai due vettori dati:</p>
+                
+                <h4>Definizione geometrica</h4>
+                <div class="formula">
+                    $$|\vec{a} \times \vec{b}| = |\vec{a}| \cdot |\vec{b}| \cdot \sin\theta$$
+                </div>
+                <p>La direzione è data dalla <strong>regola della mano destra</strong>.</p>
+                
+                <h4>Definizione tramite componenti</h4>
+                <div class="formula">
+                    $$\vec{a} \times \vec{b} = \begin{vmatrix} \hat{i} & \hat{j} & \hat{k} \\ a_x & a_y & a_z \\ b_x & b_y & b_z \end{vmatrix}$$
+                </div>
+                <div class="formula">
+                    $$\vec{a} \times \vec{b} = (a_yb_z - a_zb_y)\hat{i} + (a_zb_x - a_xb_z)\hat{j} + (a_xb_y - a_yb_x)\hat{k}$$
+                </div>
+                
+                <h4>Proprietà</h4>
+                <ul>
+                    <li>$\vec{a} \times \vec{b} = -\vec{b} \times \vec{a}$ (anticommutativo)</li>
+                    <li>$\vec{a} \times \vec{a} = \vec{0}$</li>
+                    <li>Se $\vec{a} \parallel \vec{b}$ allora $\vec{a} \times \vec{b} = \vec{0}$</li>
+                    <li>$\hat{i} \times \hat{j} = \hat{k}$, $\hat{j} \times \hat{k} = \hat{i}$, $\hat{k} \times \hat{i} = \hat{j}$</li>
+                    <li>$\hat{j} \times \hat{i} = -\hat{k}$, $\hat{k} \times \hat{j} = -\hat{i}$, $\hat{i} \times \hat{k} = -\hat{j}$</li>
+                </ul>
+            </div>
+
+            <div class="section">
+                <h3>6. Versori e Vettori Unitari</h3>
+                <p>Un <strong>versore</strong> è un vettore di modulo unitario.</p>
+                
+                <h4>Versore di un vettore</h4>
+                <div class="formula">
+                    $$\hat{v} = \frac{\vec{v}}{|\vec{v}|}$$
+                </div>
+                
+                <h4>Versori fondamentali</h4>
+                <ul>
+                    <li>$\hat{i} = (1, 0, 0)$ lungo l'asse x</li>
+                    <li>$\hat{j} = (0, 1, 0)$ lungo l'asse y</li>
+                    <li>$\hat{k} = (0, 0, 1)$ lungo l'asse z</li>
+                </ul>
+            </div>
+
+            <div class="section">
+                <h3>7. Applicazioni in Fisica</h3>
+                
+                <h4>Momento di una Forza</h4>
+                <div class="formula">
+                    $$\vec{M} = \vec{r} \times \vec{F}$$
+                </div>
+                <p>Il modulo è:</p>
+                <div class="formula">
+                    $$|\vec{M}| = |\vec{r}| \cdot |\vec{F}| \cdot \sin\theta = r \cdot F \cdot \sin\theta$$
+                </div>
+                
+                <h4>Lavoro</h4>
+                <div class="formula">
+                    $$W = \vec{F} \cdot \vec{s}$$
+                </div>
+                <p>Dove $\vec{s}$ è lo spostamento.</p>
+                <div class="formula">
+                    $$W = F \cdot s \cdot \cos\theta$$
+                </div>
+                
+                <h4>Velocità e Accelerazione</h4>
+                <p>Sono grandezze vettoriali:</p>
+                <div class="formula">
+                    $$\vec{v} = \frac{d\vec{r}}{dt}$$
+                </div>
+                <div class="formula">
+                    $$\vec{a} = \frac{d\vec{v}}{dt}$$
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>8. Formule Rapide</h3>
+                
+                <table>
+                    <tr>
+                        <th>Operazione</th>
+                        <th>Formula</th>
+                    </tr>
+                    <tr>
+                        <td>Modulo 2D</td>
+                        <td>$|\vec{v}| = \sqrt{v_x^2 + v_y^2}$</td>
+                    </tr>
+                    <tr>
+                        <td>Modulo 3D</td>
+                        <td>$|\vec{v}| = \sqrt{v_x^2 + v_y^2 + v_z^2}$</td>
+                    </tr>
+                    <tr>
+                        <td>Prodotto scalare</td>
+                        <td>$\vec{a} \cdot \vec{b} = a_xb_x + a_yb_y + a_zb_z$</td>
+                    </tr>
+                    <tr>
+                        <td>Angolo tra vettori</td>
+                        <td>$\cos\theta = \frac{\vec{a} \cdot \vec{b}}{|\vec{a}||\vec{b}|}$</td>
+                    </tr>
+                    <tr>
+                        <td>Modulo prod. vettoriale</td>
+                        <td>$|\vec{a} \times \vec{b}| = |\vec{a}||\vec{b}|\sin\theta$</td>
+                    </tr>
+                    <tr>
+                        <td>Versore</td>
+                        <td>$\hat{v} = \frac{\vec{v}}{|\vec{v}|}$</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- TAB 3: ESERCIZI UNITÀ DI MISURA -->
+        <div id="tab3" class="tab-content">
+            <h2>✏️ Esercizi: Unità di Misura</h2>
+            
+            <!-- Esercizio 1 -->
+            <div class="exercise">
+                <div class="exercise-header" onclick="toggleSolution(this)">
+                    <span><strong>Esercizio 1:</strong> Conversione velocità - Quale di queste equivalenze è corretta?</span>
+                </div>
+                <div class="solution">
+                    <p><strong>Opzioni:</strong></p>
+                    <ul>
+                        <li>(a) 10 km/h = 36 m/s</li>
+                        <li>(b) 72 km/h = 20 m/s ✓</li>
+                        <li>(c) 20 km/h = 72 m/s</li>
+                        <li>(d) 36 km/h = 1 m/s</li>
+                        <li>(e) 36 km/h = 0.0036 m/s</li>
+                    </ul>
+                    
+                    <h4>Soluzione:</h4>
+                    <p><strong>Formula di conversione:</strong></p>
+                    <div class="formula">
+                        $$\text{m/s} = \frac{\text{km/h}}{3.6}$$
+                    </div>
+                    
+                    <p>Verifichiamo ogni opzione:</p>
+                    
+                    <p><strong>(a) 10 km/h:</strong></p>
+                    <div class="formula">
+                        $$10 \, \text{km/h} = \frac{10}{3.6} \, \text{m/s} = 2.78 \, \text{m/s} \neq 36 \, \text{m/s}$$ 
+                        <span style="color: red;">❌</span>
+                    </div>
+                    
+                    <p><strong>(b) 72 km/h:</strong></p>
+                    <div class="formula">
+                        $$72 \, \text{km/h} = \frac{72}{3.6} \, \text{m/s} = 20 \, \text{m/s}$$ 
+                        <span style="color: green;">✓</span>
+                    </div>
+                    
+                    <p><strong>(c) 20 km/h:</strong></p>
+                    <div class="formula">
+                        $$20 \, \text{km/h} = \frac{20}{3.6} \, \text{m/s} = 5.56 \, \text{m/s} \neq 72 \, \text{m/s}$$ 
+                        <span style="color: red;">❌</span>
+                    </div>
+                    
+                    <p><strong>(d) 36 km/h:</strong></p>
+                    <div class="formula">
+                        $$36 \, \text{km/h} = \frac{36}{3.6} \, \text{m/s} = 10 \, \text{m/s} \neq 1 \, \text{m/s}$$ 
+                        <span style="color: red;">❌</span>
+                    </div>
+                    
+                    <p><strong>(e) 36 km/h:</strong></p>
+                    <div class="formula">
+                        $$36 \, \text{km/h} = \frac{36}{3.6} \, \text{m/s} = 10 \, \text{m/s} \neq 0.0036 \, \text{m/s}$$ 
+                        <span style="color: red;">❌</span>
+                    </div>
+                    
+                    <div class="note">
+                        <strong>Risposta corretta: (b)</strong>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Esercizio 2 -->
+            <div class="exercise">
+                <div class="exercise-header" onclick="toggleSolution(this)">
+                    <span><strong>Esercizio 2:</strong> Coefficiente di attrito radente - Unità di misura</span>
+                </div>
+                <div class="solution">
+                    <p><strong>Domanda:</strong> Il coefficiente di attrito radente μ tra un corpo e la superficie su cui striscia si esprime come rapporto tra due forze. Quali sono le sue unità di misura nel Sistema Internazionale?</p>
+                    
+                    <p><strong>Formula:</strong></p>
+                    <div class="formula">
+                        $$\mu = \frac{F_{\text{attrito}}}{F_{\text{normale}}} = \frac{\text{N}}{\text{N}}$$
+                    </div>
+                    
+                    <p>Ricordiamo che:</p>
+                    <div class="formula">
+                        $$1 \, \text{N} = 1 \, \frac{\text{kg} \cdot \text{m}}{\text{s}^2}$$
+                    </div>
+                    
+                    <h4>Analisi dimensionale:</h4>
+                    <div class="formula">
+                        $$[\mu] = \frac{[\text{Forza}]}{[\text{Forza}]} = \frac{\text{kg} \cdot \text{m/s}^2}{\text{kg} \cdot \text{m/s}^2} = 1$$
+                    </div>
+                    
+                    <p>Il coefficiente di attrito è <strong>adimensionale</strong> (senza unità di misura).</p>
+                    
+                    <p><strong>Verifica opzioni:</strong></p>
+                    <ul>
+                        <li>(a) kg ❌</li>
+                        <li>(b) N/m ❌</li>
+                        <li>(c) nessuna, è adimensionale ✓</li>
+                        <li>(d) m/s ❌</li>
+                        <li>(e) N ❌</li>
+                    </ul>
+                    
+                    <div class="note">
+                        <strong>Risposta corretta: (c)</strong> - Il coefficiente di attrito è adimensionale
+                    </div>
+                </div>
+            </div>
+
+            <!-- Esercizio 3 -->
+            <div class="exercise">
+                <div class="exercise-header" onclick="toggleSolution(this)">
+                    <span><strong>Esercizio 3:</strong> Conversione energia: calorie in Joule</span>
+                </div>
+                <div class="solution">
+                    <p><strong>Dato:</strong> 1 cal = 4.186 J</p>
+                    <p><strong>Domanda:</strong> Ricordando che 1 cal = 4.186 J, quale di queste equivalenze è corretta?</p>
+                    
+                    <p><strong>Opzioni:</strong></p>
+                    <ul>
+                        <li>(a) 300 kcal = 1.2558 × 10⁵ J</li>
+                        <li>(b) 300 kcal = 1.2558 × 10⁴ J</li>
+                        <li>(c) 300 kcal = 1.2558 × 10⁶ J ✓</li>
+                        <li>(d) 300 kcal = 1.2558 × 10³ J</li>
+                        <li>(e) 300 kcal = 1.2558 × 10⁷ J</li>
+                    </ul>
+                    
+                    <h4>Soluzione:</h4>
+                    <p><strong>Passo 1:</strong> Convertire kcal in cal</p>
+                    <div class="formula">
+                        $$300 \, \text{kcal} = 300 \times 1000 \, \text{cal} = 300000 \, \text{cal} = 3 \times 10^5 \, \text{cal}$$
+                    </div>
+                    
+                    <p><strong>Passo 2:</strong> Convertire cal in J</p>
+                    <div class="formula">
+                        $$3 \times 10^5 \, \text{cal} \times 4.186 \, \frac{\text{J}}{\text{cal}} = 1255800 \, \text{J}$$
+                    </div>
+                    
+                    <p><strong>Passo 3:</strong> Esprimere in notazione scientifica</p>
+                    <div class="formula">
+                        $$1255800 \, \text{J} = 1.2558 \times 10^6 \, \text{J}$$
+                    </div>
+                    
+                    <div class="note">
+                        <strong>Risposta corretta: (c)</strong> 300 kcal = 1.2558 × 10⁶ J
+                    </div>
+                    
+                    <p><strong>Verifica rapida:</strong></p>
+                    <div class="formula">
+                        $$300 \, \text{kcal} \times 4186 \, \frac{\text{J}}{\text{kcal}} = 1255800 \, \text{J} = 1.2558 \times 10^6 \, \text{J}$$
+                    </div>
+                </div>
+            </div>
+
+            <!-- Esercizio 4 -->
+            <div class="exercise">
+                <div class="exercise-header" onclick="toggleSolution(this)">
+                    <span><strong>Esercizio 4:</strong> Transistor nei circuiti - Conversione nanometri</span>
+                </div>
+                <div class="solution">
+                    <p><strong>Domanda:</strong> I transistor contenuti nei circuiti integrali dei computer, oggi, hanno dimensioni di 14 nanometri. A quanti centimetri corrisponde tale dimensione?</p>
+                    
+                    <p><strong>Dato:</strong> 14 nm</p>
+                    
+                    <h4>Soluzione:</h4>
+                    <p>Ricordiamo i prefissi:</p>
+                    <ul>
+                        <li>nano (n) = $10^{-9}$</li>
+                        <li>centi (c) = $10^{-2}$</li>
+                    </ul>
+                    
+                    <p><strong>Metodo 1:</strong> Passaggio per metri</p>
+                    <div class="formula">
+                        $$14 \, \text{nm} = 14 \times 10^{-9} \, \text{m}$$
+                    </div>
+                    <div class="formula">
+                        $$14 \times 10^{-9} \, \text{m} = 14 \times 10^{-9} \times 10^{2} \, \text{cm} = 14 \times 10^{-7} \, \text{cm}$$
+                    </div>
+                    <div class="formula">
+                        $$= 1.4 \times 10^{-6} \, \text{cm}$$
+                    </div>
+                    
+                    <p><strong>Metodo 2:</strong> Rapporto diretto</p>
+                    <div class="formula">
+                        $$\frac{1 \, \text{nm}}{1 \, \text{cm}} = \frac{10^{-9} \, \text{m}}{10^{-2} \, \text{m}} = 10^{-7}$$
+                    </div>
+                    <div class="formula">
+                        $$14 \, \text{nm} = 14 \times 10^{-7} \, \text{cm} = 1.4 \times 10^{-6} \, \text{cm}$$
+                    </div>
+                    
+                    <p><strong>Verifica opzioni:</strong></p>
+                    <ul>
+                        <li>(a) $1.4 \times 10^{-6}$ cm ✓</li>
+                        <li>(b) $1.4 \times 10^{-4}$ cm ❌</li>
+                        <li>(c) $1.4 \times 10^{-8}$ cm ❌</li>
+                        <li>(d) $1.4 \times 10^{-9}$ cm ❌</li>
+                        <li>(e) $1.4 \times 10^{-5}$ cm ❌</li>
+                    </ul>
+                    
+                    <div class="note">
+                        <strong>Risposta corretta: (a)</strong> $1.4 \times 10^{-6}$ cm
+                    </div>
+                </div>
+            </div>
+
+            <!-- Esercizio 5 -->
+            <div class="exercise">
+                <div class="exercise-header" onclick="toggleSolution(this)">
+                    <span><strong>Esercizio 5:</strong> Conversione corrente: picoampere in ampere</span>
+                </div>
+                <div class="solution">
+                    <p><strong>Domanda:</strong> Una corrente di 10 pA (ossia 10 picoampere) a quanti ampere corrisponde?</p>
+                    
+                    <p><strong>Prefisso pico:</strong></p>
+                    <div class="formula">
+                        $$\text{pico (p)} = 10^{-12}$$
+                    </div>
+                    
+                    <h4>Soluzione:</h4>
+                    <div class="formula">
+                        $$10 \, \text{pA} = 10 \times 10^{-12} \, \text{A} = 10^{-11} \, \text{A}$$
+                    </div>
+                    
+                    <p><strong>Verifica opzioni:</strong></p>
+                    <ul>
+                        <li>(a) $10^{-8}$ A ❌</li>
+                        <li>(b) $10^{-9}$ A ❌</li>
+                        <li>(c) $10^{-10}$ A ❌</li>
+                        <li>(d) $10^{-6}$ A ❌</li>
+                        <li>(e) $10^{-11}$ A ✓</li>
+                    </ul>
+                    
+                    <div class="note">
+                        <strong>Risposta corretta: (e)</strong> $10^{-11}$ A
+                    </div>
+                    
+                    <p><strong>Nota:</strong> Ricorda la scala dei prefissi:</p>
+                    <ul>
+                        <li>milli (m) = $10^{-3}$</li>
+                        <li>micro (μ) = $10^{-6}$</li>
+                        <li>nano (n) = $10^{-9}$</li>
+                        <li>pico (p) = $10^{-12}$</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Esercizio 6 -->
+            <div class="exercise">
+                <div class="exercise-header" onclick="toggleSolution(this)">
+                    <span><strong>Esercizio 6:</strong> Conversione superficie: ettari in metri quadrati</span>
+                </div>
+                <div class="solution">
+                    <p><strong>Domanda:</strong> Un terreno agricolo di forma rettangolare ha un lato di 44 metri e un altro di 88 metri. Di quanti ettari è la sua superficie?</p>
+                    <p><strong>Dato:</strong> Si tenga conto del numero di cifre significative e si ricordi che 1 ha = 10000 m²</p>
+                    
+                    <h4>Soluzione:</h4>
+                    <p><strong>Passo 1:</strong> Calcolare l'area del rettangolo</p>
+                    <div class="formula">
+                        $$A = \text{base} \times \text{altezza} = 44 \, \text{m} \times 88 \, \text{m} = 3872 \, \text{m}^2$$
+                    </div>
+                    
+                    <p><strong>Passo 2:</strong> Convertire m² in ettari</p>
+                    <p>Sapendo che 1 ha = 10000 m²:</p>
+                    <div class="formula">
+                        $$A = \frac{3872 \, \text{m}^2}{10000 \, \text{m}^2/\text{ha}} = 0.3872 \, \text{ha}$$
+                    </div>
+                    
+                    <p><strong>Passo 3:</strong> Cifre significative</p>
+                    <p>I dati hanno 2 cifre significative (44 e 88), quindi:</p>
+                    <div class="formula">
+                        $$A \approx 0.39 \, \text{ha}$$
+                    </div>
+                    
+                    <p><strong>Verifica opzioni:</strong></p>
+                    <ul>
+                        <li>(a) 3.9 ha ❌</li>
+                        <li>(b) 0.0039 ha ❌</li>
+                        <li>(c) 0.039 ha ❌</li>
+                        <li>(d) 39 ha ❌</li>
+                        <li>(e) 0.39 ha ✓</li>
+                    </ul>
+                    
+                    <div class="note">
+                        <strong>Risposta corretta: (e)</strong> 0.39 ha
+                    </div>
+                </div>
+            </div>
+
+            <!-- Esercizio 7 -->
+            <div class="exercise">
+                <div class="exercise-header" onclick="toggleSolution(this)">
+                    <span><strong>Esercizio 7:</strong> Unità di misura della pressione</span>
+                </div>
+                <div class="solution">
+                    <p><strong>Domanda:</strong> Quale di queste equivalenze, relative all'unità di misura della pressione, è corretta?</p>
+                    
+                    <p><strong>Definizione di Pressione:</strong></p>
+                    <div class="formula">
+                        $$p = \frac{F}{A} = \frac{\text{Forza}}{\text{Area}}$$
+                    </div>
+                    
+                    <p><strong>Unità SI della pressione: Pascal (Pa)</strong></p>
+                    <div class="formula">
+                        $$1 \, \text{Pa} = 1 \, \frac{\text{N}}{\text{m}^2}$$
+                    </div>
+                    
+                    <h4>Analisi dimensionale:</h4>
+                    <p>Ricordando che $1 \, \text{N} = 1 \, \text{kg} \cdot \text{m/s}^2$:</p>
+                    <div class="formula">
+                        $$1 \, \text{Pa} = 1 \, \frac{\text{N}}{\text{m}^2} = \frac{\text{kg} \cdot \text{m/s}^2}{\text{m}^2} = \frac{\text{kg}}{\text{m} \cdot \text{s}^2}$$
+                    </div>
+                    
+                    <p><strong>Verifica opzioni:</strong></p>
+                    <ul>
+                        <li>(A) $1 \, \text{Pa} = 1 \, \text{kg}/\text{m}^2$ ❌ (manca s² al denominatore)</li>
+                        <li>(B) $1 \, \text{Pa} = 9.8 \, \text{kg} \cdot \text{m}^2$ ❌ (completamente sbagliata)</li>
+                        <li>(C) $1 \, \text{Pa} = 1 \, \text{N}/(\text{m}^2)$ ✓ (CORRETTA)</li>
+                        <li>(D) $1 \, \text{Pa} = 9.8 \, \text{kg}/\text{m}^2$ ❌</li>
+                        <li>(E) $1 \, \text{Pa} = 1 \, \text{N} \cdot \text{m}^2$ ❌ (N moltiplicato invece che diviso)</li>
+                    </ul>
+                    
+                    <div class="note">
+                        <strong>Risposta corretta: (C)</strong> $1 \, \text{Pa} = 1 \, \text{N}/(\text{m}^2)$
+                    </div>
+                    
+                    <p><strong>Nota:</strong> Altre unità di misura della pressione includono:</p>
+                    <ul>
+                        <li>1 bar = $10^5$ Pa</li>
+                        <li>1 atm = 101325 Pa ≈ 1.013 bar</li>
+                        <li>1 mmHg (torr) = 133.322 Pa</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 4: ESERCIZI VETTORI -->
+        <div id="tab4" class="tab-content">
+            <h2>✏️ Esercizi: Vettori</h2>
+            
+            <!-- Esercizio 1 -->
+            <div class="exercise">
+                <div class="exercise-header" onclick="toggleSolution(this)">
+                    <span><strong>Esercizio 1:</strong> Prodotto scalare di vettori</span>
+                </div>
+                <div class="solution">
+                    <p><strong>Dati:</strong></p>
+                    <ul>
+                        <li>$\vec{a} = \vec{b}$ nello spazio $(x, y, z)$ con componenti $\vec{a} = (-1, 3, 2)$</li>
+                        <li>$\vec{b} = (4, 3, -1)$</li>
+                    </ul>
+                    <p><strong>Domanda:</strong> Il loro prodotto scalare è:</p>
+                    
+                    <h4>Soluzione:</h4>
+                    <p><strong>Formula del prodotto scalare:</strong></p>
+                    <div class="formula">
+                        $$\vec{a} \cdot \vec{b} = a_x b_x + a_y b_y + a_z b_z$$
+                    </div>
+                    
+                    <p><strong>Calcolo:</strong></p>
+                    <div class="formula">
+                        $$\vec{a} \cdot \vec{b} = (-1)(4) + (3)(3) + (2)(-1)$$
+                    </div>
+                    <div class="formula">
+                        $$= -4 + 9 - 2 = 3$$
+                    </div>
+                    
+                    <p><strong>Verifica opzioni:</strong></p>
+                    <ul>
+                        <li>(a) il vettore $(-3, -7, 9)$ ❌ (il prodotto scalare dà uno scalare, non un vettore)</li>
+                        <li>(b) 0 ❌</li>
+                        <li>(c) 10 ❌</li>
+                        <li>(d) 3 ✓</li>
+                        <li>(e) -10 ❌</li>
+                    </ul>
+                    
+                    <div class="note">
+                        <strong>Risposta corretta: (d) 3</strong>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Esercizio 2 -->
+            <div class="exercise">
+                <div class="exercise-header" onclick="toggleSolution(this)">
+                    <span><strong>Esercizio 2:</strong> Modulo di somma e differenza di vettori</span>
+                </div>
+                <div class="solution">
+                    <p><strong>Dati:</strong></p>
+                    <div class="formula">
+                        $$\vec{v} = 1\vec{i} + 1\vec{j}$$
+                    </div>
+                    <div class="formula">
+                        $$\vec{u} = 1\vec{i} - 1\vec{j}$$
+                    </div>
+                    <p><strong>Domanda:</strong> Quale delle seguenti affermazioni è vera?</p>
+                    
+                    <h4>Soluzione:</h4>
+                    <p><strong>Calcolo di $\vec{s} = \vec{v} + \vec{u}$:</strong></p>
+                    <div class="formula">
+                        $$\vec{s} = (1\vec{i} + 1\vec{j}) + (1\vec{i} - 1\vec{j}) = 2\vec{i} + 0\vec{j} = 2\vec{i}$$
+                    </div>
+                    <div class="formula">
+                        $$|\vec{s}| = \sqrt{2^2 + 0^2} = 2$$
+                    </div>
+                    
+                    <p><strong>Calcolo di $\vec{d} = \vec{v} - \vec{u}$:</strong></p>
+                    <div class="formula">
+                        $$\vec{d} = (1\vec{i} + 1\vec{j}) - (1\vec{i} - 1\vec{j}) = 0\vec{i} + 2\vec{j} = 2\vec{j}$$
+                    </div>
+                    <div class="formula">
+                        $$|\vec{d}| = \sqrt{0^2 + 2^2} = 2$$
+                    </div>
+                    
+                    <p><strong>Verifica opzioni:</strong></p>
+                    <ul>
+                        <li>(a) Il modulo del vettore $\vec{s} = \vec{v} + \vec{u}$ vale $|\vec{s}| = 2$ ✓</li>
+                        <li>(b) Il modulo del vettore $\vec{d} = \vec{v} - \vec{u}$ vale $|\vec{d}| = 4$ ❌ (vale 2)</li>
+                        <li>(c) Il modulo del vettore $\vec{d} = \vec{v} - \vec{u}$ vale $|\vec{d}| = 1$ ❌</li>
+                        <li>(d) Il modulo del vettore $\vec{d} = \vec{v} - \vec{u}$ vale $|\vec{d}| = \sqrt{2}$ ❌</li>
+                        <li>(e) Il modulo del vettore $\vec{s} = \vec{v} + \vec{u}$ vale $|\vec{s}| = \sqrt{2}$ ❌</li>
+                    </ul>
+                    
+                    <div class="note">
+                        <strong>Risposta corretta: (a)</strong> Il modulo di $\vec{s}$ vale 2
+                    </div>
+                </div>
+            </div>
+
+            <!-- Esercizio 3 -->
+            <div class="exercise">
+                <div class="exercise-header" onclick="toggleSolution(this)">
+                    <span><strong>Esercizio 3:</strong> Angolo tra due vettori nel piano</span>
+                </div>
+                <div class="solution">
+                    <p><strong>Dati:</strong></p>
+                    <div class="formula">
+                        $$\vec{u} = 3\vec{i} + 3\vec{j}$$
+                    </div>
+                    <div class="formula">
+                        $$\vec{v} = \frac{5\sqrt{3}}{2}\vec{i} + \frac{5}{2}\vec{j}$$
+                    </div>
+                    <p><strong>Domanda:</strong> Quanto vale l'angolo tra i due vettori?</p>
+                    <p><strong>Nota:</strong> Si ricordi che il prodotto scalare $\vec{u} \cdot \vec{v}$ si può scrivere in due modi diversi, usando il modulo o usando le componenti.</p>
+                    
+                    <h4>Soluzione:</h4>
+                    <p><strong>Formula per l'angolo:</strong></p>
+                    <div class="formula">
+                        $$\vec{u} \cdot \vec{v} = |\vec{u}| \cdot |\vec{v}| \cdot \cos\theta$$
+                    </div>
+                    <div class="formula">
+                        $$\cos\theta = \frac{\vec{u} \cdot \vec{v}}{|\vec{u}| \cdot |\vec{v}|}$$
+                    </div>
+                    
+                    <p><strong>Passo 1: Calcolo del prodotto scalare</strong></p>
+                    <div class="formula">
+                        $$\vec{u} \cdot \vec{v} = 3 \cdot \frac{5\sqrt{3}}{2} + 3 \cdot \frac{5}{2}$$
+                    </div>
+                    <div class="formula">
+                        $$= \frac{15\sqrt{3}}{2} + \frac{15}{2} = \frac{15\sqrt{3} + 15}{2} = \frac{15(\sqrt{3} + 1)}{2}$$
+                    </div>
+                    
+                    <p><strong>Passo 2: Calcolo modulo di $\vec{u}$</strong></p>
+                    <div class="formula">
+                        $$|\vec{u}| = \sqrt{3^2 + 3^2} = \sqrt{9 + 9} = \sqrt{18} = 3\sqrt{2}$$
+                    </div>
+                    
+                    <p><strong>Passo 3: Calcolo modulo di $\vec{v}$</strong></p>
+                    <div class="formula">
+                        $$|\vec{v}| = \sqrt{\left(\frac{5\sqrt{3}}{2}\right)^2 + \left(\frac{5}{2}\right)^2}$$
+                    </div>
+                    <div class="formula">
+                        $$= \sqrt{\frac{75}{4} + \frac{25}{4}} = \sqrt{\frac{100}{4}} = \frac{10}{2} = 5$$
+                    </div>
+                    
+                    <p><strong>Passo 4: Calcolo del coseno</strong></p>
+                    <div class="formula">
+                        $$\cos\theta = \frac{15(\sqrt{3} + 1)/2}{3\sqrt{2} \cdot 5} = \frac{15(\sqrt{3} + 1)}{30\sqrt{2}} = \frac{\sqrt{3} + 1}{2\sqrt{2}}$$
+                    </div>
+                    
+                    <p>Razionalizziamo:</p>
+                    <div class="formula">
+                        $$\cos\theta = \frac{\sqrt{3} + 1}{2\sqrt{2}} \cdot \frac{\sqrt{2}}{\sqrt{2}} = \frac{\sqrt{6} + \sqrt{2}}{4}$$
+                    </div>
+                    
+                    <p>Questo corrisponde a $\cos 15°$, quindi:</p>
+                    <div class="formula">
+                        $$\theta = 15°$$
+                    </div>
+                    
+                    <p><strong>Verifica opzioni:</strong></p>
+                    <ul>
+                        <li>(a) 15° ✓</li>
+                        <li>(b) -15° ❌</li>
+                        <li>(c) 30° ❌</li>
+                        <li>(d) 75° ❌</li>
+                        <li>(e) 20° ❌</li>
+                    </ul>
+                    
+                    <div class="note">
+                        <strong>Risposta corretta: (a) 15°</strong>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Esercizio 4 -->
+            <div class="exercise">
+                <div class="exercise-header" onclick="toggleSolution(this)">
+                    <span><strong>Esercizio 4:</strong> Componenti del vettore differenza</span>
+                </div>
+                <div class="solution">
+                    <p><strong>Dati:</strong></p>
+                    <div class="formula">
+                        $$\vec{v} = 3\vec{i} - 4\vec{j}$$
+                    </div>
+                    <div class="formula">
+                        $$\vec{u} = 1\vec{i} + 3\vec{j}$$
+                    </div>
+                    <p><strong>Domanda:</strong> Quali sono le componenti del vettore $\vec{w} = \vec{v} - \vec{u}$?</p>
+                    
+                    <h4>Soluzione:</h4>
+                    <p><strong>Calcolo della differenza:</strong></p>
+                    <div class="formula">
+                        $$\vec{w} = \vec{v} - \vec{u} = (3\vec{i} - 4\vec{j}) - (1\vec{i} + 3\vec{j})$$
+                    </div>
+                    <div class="formula">
+                        $$= 3\vec{i} - 4\vec{j} - 1\vec{i} - 3\vec{j}$$
+                    </div>
+                    <div class="formula">
+                        $$= (3 - 1)\vec{i} + (-4 - 3)\vec{j}$$
+                    </div>
+                    <div class="formula">
+                        $$= 2\vec{i} - 7\vec{j}$$
+                    </div>
+                    
+                    <p>Quindi le componenti sono: $(2, -7)$ oppure $w_x = 2$, $w_y = -7$</p>
+                    
+                    <p><strong>Verifica opzioni:</strong></p>
+                    <ul>
+                        <li>(a) $\vec{w} = 2\vec{i} - 7\vec{j}$ ✓</li>
+                        <li>(b) $\vec{w} = 4\vec{i} - 1\vec{j}$ ❌</li>
+                        <li>(c) $\vec{w} = 2\vec{i} + 7\vec{j}$ ❌</li>
+                        <li>(d) $\vec{w} = 4\vec{i} + 3\vec{j}$ ❌</li>
+                        <li>(e) la differenza tra due vettori non è un vettore e quindi non ha componenti ❌ (FALSO)</li>
+                    </ul>
+                    
+                    <div class="note">
+                        <strong>Risposta corretta: (a)</strong> $\vec{w} = 2\vec{i} - 7\vec{j}$
+                    </div>
+                </div>
+            </div>
+
+            <!-- Esercizio 5 -->
+            <div class="exercise">
+                <div class="exercise-header" onclick="toggleSolution(this)">
+                    <span><strong>Esercizio 5:</strong> Angolo tramite componenti e moduli</span>
+                </div>
+                <div class="solution">
+                    <p><strong>Dati:</strong></p>
+                    <div class="formula">
+                        $$\vec{u} = u_x\vec{i} + u_y\vec{j}$$
+                    </div>
+                    <div class="formula">
+                        $$\vec{v} = v_x\vec{i} + v_y\vec{j}$$
+                    </div>
+                    <p>Siano $u$ e $v$ i loro moduli.</p>
+                    <p><strong>Domanda:</strong> Quale delle seguenti espressioni può essere usata per calcolare l'angolo θ tra i due vettori?</p>
+                    
+                    <h4>Soluzione:</h4>
+                    <p><strong>Le due forme del prodotto scalare:</strong></p>
+                    <p>1. Forma con moduli:</p>
+                    <div class="formula">
+                        $$\vec{u} \cdot \vec{v} = u \cdot v \cdot \cos\theta$$
+                    </div>
+                    
+                    <p>2. Forma con componenti:</p>
+                    <div class="formula">
+                        $$\vec{u} \cdot \vec{v} = u_x v_x + u_y v_y$$
+                    </div>
+                    
+                    <p><strong>Uguagliando le due espressioni:</strong></p>
+                    <div class="formula">
+                        $$u \cdot v \cdot \cos\theta = u_x v_x + u_y v_y$$
+                    </div>
+                    
+                    <p><strong>Ricavando $\cos\theta$:</strong></p>
+                    <div class="formula">
+                        $$\cos\theta = \frac{u_x v_x + u_y v_y}{u \cdot v}$$
+                    </div>
+                    
+                    <p><strong>Verifica opzioni:</strong></p>
+                    <ul>
+                        <li>(a) $\sin\theta = \frac{u_x v_x + u_y v_y}{uv}$ ❌ (dovrebbe essere coseno)</li>
+                        <li>(b) $\cos\theta = \frac{u_x v_x + u_y v_y}{uv}$ ❌ (manca il prodotto al denominatore, ma concettualmente è corretto)</li>
+                        <li>(c) $\cos\theta = \frac{u + v}{u_x v_x + u_y v_y}$ ❌ (invertito)</li>
+                        <li>(d) $\theta = \frac{u_x \cdot v_x + u_y \cdot v_y}{uv}$ ❌ (θ non è uguale al coseno)</li>
+                        <li>(e) $\cos\theta = \frac{u_x \cdot v_x + u_y \cdot v_y}{uv}$ ✓</li>
+                    </ul>
+                    
+                    <div class="note">
+                        <strong>Risposta corretta: (e)</strong> $\cos\theta = \frac{u_x v_x + u_y v_y}{uv}$
+                    </div>
+                </div>
+            </div>
+
+            <!-- Esercizio 6 -->
+            <div class="exercise">
+                <div class="exercise-header" onclick="toggleSolution(this)">
+                    <span><strong>Esercizio 6:</strong> Modulo del momento di una forza</span>
+                </div>
+                <div class="solution">
+                    <p><strong>Domanda:</strong> Il vettore forza $\vec{F}$ ha modulo pari a 2 N ed è applicato nel punto P che dista 1 m dal polo O. Quale delle seguenti affermazioni è corretta?</p>
+                    
+                    <p><strong>Dato dal diagramma:</strong> $\alpha = \pi/4$</p>
+                    
+                    <h4>Soluzione:</h4>
+                    <p><strong>Formula del momento:</strong></p>
+                    <div class="formula">
+                        $$\vec{M} = \vec{r} \times \vec{F}$$
+                    </div>
+                    
+                    <p><strong>Modulo del momento:</strong></p>
+                    <div class="formula">
+                        $$|\vec{M}| = |\vec{r}| \cdot |\vec{F}| \cdot \sin\alpha$$
+                    </div>
+                    
+                    <p>Dove $\alpha$ è l'angolo tra $\vec{r}$ e $\vec{F}$.</p>
+                    
+                    <p><strong>Dal diagramma:</strong> $\alpha = \pi/4 = 45°$</p>
+                    
+                    <p><strong>Calcolo:</strong></p>
+                    <div class="formula">
+                        $$|\vec{M}| = 1 \, \text{m} \cdot 2 \, \text{N} \cdot \sin(\pi/4)$$
+                    </div>
+                    <div class="formula">
+                        $$= 2 \cdot \frac{\sqrt{2}}{2} = \sqrt{2} \, \text{N} \cdot \text{m}$$
+                    </div>
+                    
+                    <p><strong>Verifica opzioni:</strong></p>
+                    <ul>
+                        <li>(a) $|\vec{M}| = \sqrt{2}$ N·m² ❌ (unità sbagliata, ma modulo corretto)</li>
+                        <li>(b) $|\vec{M}| = 2$ N·m² ❌</li>
+                        <li>(c) $|\vec{M}| = 2\sqrt{2}$ N·m² ❌</li>
+                        <li>(d) $|\vec{M}| = 0$ N·m ❌</li>
+                        <li>(e) $|\vec{M}| = \frac{\sqrt{2}}{2}$ N·m² ❌</li>
+                    </ul>
+                    
+                    <p><strong>Nota importante:</strong> L'unità di misura corretta del momento è N·m, non N·m². Le opzioni fornite hanno tutte unità sbagliate. La risposta più vicina è (a) con modulo $\sqrt{2}$ ma con unità corretta N·m.</p>
+                    
+                    <div class="note">
+                        <strong>Valore corretto:</strong> $|\vec{M}| = \sqrt{2} \, \text{N} \cdot \text{m}$ (circa 1.41 N·m)
+                    </div>
+                </div>
+            </div>
+
+            <!-- Esercizio 7 -->
+            <div class="exercise">
+                <div class="exercise-header" onclick="toggleSolution(this)">
+                    <span><strong>Esercizio 7:</strong> Lavoro con forza e spostamento</span>
+                </div>
+                <div class="solution">
+                    <p><strong>Dati:</strong></p>
+                    <ul>
+                        <li>Sistema di riferimento cartesiano $(x, y)$ nel piano</li>
+                        <li>Cassa spostata lungo l'asse $x$ sotto l'effetto di una forza $\vec{F} = 2\vec{i} + 3\vec{j}$ N</li>
+                        <li>Spostamento: 4 m lungo l'asse x</li>
+                    </ul>
+                    <p><strong>Domanda:</strong> Quanto vale il lavoro fatto dalla forza $\vec{F}$?</p>
+                    
+                    <h4>Soluzione:</h4>
+                    <p><strong>Formula del lavoro:</strong></p>
+                    <div class="formula">
+                        $$W = \vec{F} \cdot \Delta\vec{r}$$
+                    </div>
+                    
+                    <p><strong>Dati:</strong></p>
+                    <ul>
+                        <li>$\vec{F} = 2\vec{i} + 3\vec{j}$ N</li>
+                        <li>Spostamento lungo l'asse $x$: $\Delta\vec{r} = 4\vec{i} + 0\vec{j} = 4\vec{i}$ m</li>
+                    </ul>
+                    
+                    <p><strong>Calcolo del prodotto scalare:</strong></p>
+                    <div class="formula">
+                        $$W = \vec{F} \cdot \Delta\vec{r} = (2\vec{i} + 3\vec{j}) \cdot (4\vec{i})$$
+                    </div>
+                    <div class="formula">
+                        $$= 2 \cdot 4 \cdot (\vec{i} \cdot \vec{i}) + 3 \cdot 4 \cdot (\vec{j} \cdot \vec{i})$$
+                    </div>
+                    
+                    <p>Ricordando che:</p>
+                    <ul>
+                        <li>$\vec{i} \cdot \vec{i} = 1$</li>
+                        <li>$\vec{j} \cdot \vec{i} = 0$ (vettori perpendicolari)</li>
+                    </ul>
+                    
+                    <div class="formula">
+                        $$W = 2 \cdot 4 \cdot 1 + 3 \cdot 4 \cdot 0 = 8 + 0 = 8 \, \text{J}$$
+                    </div>
+                    
+                    <p><strong>Interpretazione fisica:</strong> Solo la componente della forza lungo la direzione dello spostamento compie lavoro. La componente $F_y = 3$ N è perpendicolare allo spostamento e non contribuisce al lavoro.</p>
+                    
+                    <div class="note">
+                        <strong>Risposta calcolata: W = 8 J</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openTab(evt, tabName) {
+            var i, tabContent, tabButtons;
+            
+            tabContent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabContent.length; i++) {
+                tabContent[i].classList.remove("active");
+            }
+            
+            tabButtons = document.getElementsByClassName("tab-button");
+            for (i = 0; i < tabButtons.length; i++) {
+                tabButtons[i].classList.remove("active");
+            }
+            
+            document.getElementById(tabName).classList.add("active");
+            evt.currentTarget.classList.add("active");
+        }
+        
+        function toggleSolution(element) {
+            element.classList.toggle("active");
+            var solution = element.nextElementSibling;
+            solution.classList.toggle("show");
+        }
+    </script>
+</body>
+</html>
